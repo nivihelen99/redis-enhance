@@ -1,0 +1,16 @@
+# Redis
+dump.rdb
+
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+
+# C/C++ specific
+*.out
+*.exe
+*.dll
+
+# Other
+.DS_Store
