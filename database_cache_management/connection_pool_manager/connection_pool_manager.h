@@ -10,6 +10,7 @@
 
 // Forward declaration for hiredis context
 struct redisContext;
+class RedisConnectionGuard;
 
 class ConnectionPoolManager {
 public:

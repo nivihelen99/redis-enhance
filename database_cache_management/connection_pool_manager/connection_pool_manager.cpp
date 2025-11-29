@@ -1,4 +1,5 @@
 #include "connection_pool_manager.h"
+#include "redis_connection_guard.h"
 #include <hiredis/hiredis.h>
 #include <iostream>
 #include <stdexcept>

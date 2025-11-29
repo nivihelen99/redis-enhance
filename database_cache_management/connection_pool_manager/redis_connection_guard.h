@@ -1,23 +1,24 @@
 #ifndef REDIS_CONNECTION_GUARD_H
 #define REDIS_CONNECTION_GUARD_H
 
-#include "connection_pool_manager.h"
 #include <stdexcept>
-#include <memory>
+
+// Forward declaration for hiredis context
+struct redisContext;
+class ConnectionPoolManager;
 
 class RedisConnectionGuard {
 public:
-    RedisConnectionGuard(std::shared_ptr<ConnectionPoolManager> pool_manager)
-        : pool_manager_(pool_manager), connection_(nullptr) {
-        connection_ = pool_manager_->getConnection();
-        if (!connection_) {
-            throw std::runtime_error("Failed to get Redis connection");
+    RedisConnectionGuard(ConnectionPoolManager* pool_manager)
+        : pool_manager_(pool_manager), context_(pool_manager->getConnection()) {
+        if (!context_) {
+            throw std::runtime_error("Failed to get Redis connection from pool");
         }
     }
 
     ~RedisConnectionGuard() {
-        if (connection_) {
-            pool_manager_->returnConnection(connection_);
+        if (context_) {
+            pool_manager_->returnConnection(context_);
         }
     }
 
@@ -27,17 +28,11 @@ public:
     RedisConnectionGuard(RedisConnectionGuard&&) = delete;
     RedisConnectionGuard& operator=(RedisConnectionGuard&&) = delete;
 
-    redisContext* operator->() const {
-        return connection_;
-    }
-
-    redisContext* get() const {
-        return connection_;
-    }
+    redisContext* getContext() const { return context_; }
 
 private:
-    std::shared_ptr<ConnectionPoolManager> pool_manager_;
-    redisContext* connection_;
+    ConnectionPoolManager* pool_manager_;
+    redisContext* context_;
 };
 
 #endif // REDIS_CONNECTION_GUARD_H
