@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+project(DatabaseCacheManagement)
+
+add_subdirectory(connection_pool_manager)
+add_subdirectory(ttl_manager)
