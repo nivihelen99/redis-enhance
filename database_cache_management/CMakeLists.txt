@@ -3,3 +3,5 @@ project(DatabaseCacheManagement)
 
 add_subdirectory(connection_pool_manager)
 add_subdirectory(ttl_manager)
+add_subdirectory(counter_service)
+add_subdirectory(pub_sub_wrapper)

@@ -12,9 +12,9 @@ CounterService::~CounterService() {
 }
 
 long long CounterService::increment(const std::string& counter_key, long long amount) {
-    RedisConnectionGuard conn(pool_manager_);
+    RedisConnectionGuard conn(pool_manager_.get());
 
-    redisReply* reply = (redisReply*)redisCommand(conn.get(), "INCRBY %s %lld", counter_key.c_str(), amount);
+    redisReply* reply = (redisReply*)redisCommand(conn.getContext(), "INCRBY %s %lld", counter_key.c_str(), amount);
     if (!reply || reply->type != REDIS_REPLY_INTEGER) {
         if (reply) freeReplyObject(reply);
         throw std::runtime_error("Failed to increment counter in Redis");
@@ -26,9 +26,9 @@ long long CounterService::increment(const std::string& counter_key, long long am
 }
 
 long long CounterService::decrement(const std::string& counter_key, long long amount) {
-    RedisConnectionGuard conn(pool_manager_);
+    RedisConnectionGuard conn(pool_manager_.get());
 
-    redisReply* reply = (redisReply*)redisCommand(conn.get(), "DECRBY %s %lld", counter_key.c_str(), amount);
+    redisReply* reply = (redisReply*)redisCommand(conn.getContext(), "DECRBY %s %lld", counter_key.c_str(), amount);
     if (!reply || reply->type != REDIS_REPLY_INTEGER) {
         if (reply) freeReplyObject(reply);
         throw std::runtime_error("Failed to decrement counter in Redis");
@@ -40,9 +40,9 @@ long long CounterService::decrement(const std::string& counter_key, long long am
 }
 
 long long CounterService::getValue(const std::string& counter_key) {
-    RedisConnectionGuard conn(pool_manager_);
+    RedisConnectionGuard conn(pool_manager_.get());
 
-    redisReply* reply = (redisReply*)redisCommand(conn.get(), "GET %s", counter_key.c_str());
+    redisReply* reply = (redisReply*)redisCommand(conn.getContext(), "GET %s", counter_key.c_str());
     if (!reply) {
         throw std::runtime_error("Failed to get counter value from Redis");
     }
@@ -60,9 +60,9 @@ long long CounterService::getValue(const std::string& counter_key) {
 }
 
 void CounterService::deleteCounter(const std::string& counter_key) {
-    RedisConnectionGuard conn(pool_manager_);
+    RedisConnectionGuard conn(pool_manager_.get());
 
-    redisReply* reply = (redisReply*)redisCommand(conn.get(), "DEL %s", counter_key.c_str());
+    redisReply* reply = (redisReply*)redisCommand(conn.getContext(), "DEL %s", counter_key.c_str());
     if (reply) {
         freeReplyObject(reply);
     }
