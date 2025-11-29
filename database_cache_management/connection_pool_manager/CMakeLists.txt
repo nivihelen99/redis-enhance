@@ -11,6 +11,7 @@ add_library(connection_pool_manager
     connection_pool_manager.cpp
 )
 target_include_directories(connection_pool_manager PUBLIC .)
+target_include_directories(connection_pool_manager PUBLIC ${HIREDIS_INCLUDE_DIRS})
 target_link_libraries(connection_pool_manager PRIVATE ${HIREDIS_LIBRARIES})
 
 # Add the test executable
