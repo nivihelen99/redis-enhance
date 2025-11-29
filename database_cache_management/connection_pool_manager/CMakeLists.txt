@@ -23,3 +23,12 @@ target_link_libraries(test_connection_pool_manager
     GTest::GTest
     GTest::Main
 )
+
+# Add the example executable
+add_executable(connection_pool_manager_example
+    example.cpp
+)
+target_link_libraries(connection_pool_manager_example
+    connection_pool_manager
+    ${HIREDIS_LIBRARIES}
+)
